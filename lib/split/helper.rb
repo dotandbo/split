@@ -3,6 +3,7 @@ module Split
     module_function
 
     def ab_test(metric_descriptor, control = nil, request=nil, *alternatives)
+      binding.pry
       begin
         experiment = ExperimentCatalog.find_or_initialize(metric_descriptor, control, *alternatives)
 
