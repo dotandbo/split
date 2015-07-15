@@ -6,8 +6,9 @@ module Split
 
       EXPIRES = Time.now + 31536000 # One year from now
 
-      def initialize(context)
-        @cookies = context.send(:cookies)
+      def initialize(context, request=nil)
+        @cookies = request.try(:cookies) || context.send(:cookies)
+        @request = request
       end
 
       def [](key)
@@ -29,16 +30,37 @@ module Split
       private
 
       def set_cookie(value)
-        @cookies[:split] = {
-          :value => JSON.generate(value),
-          :expires => EXPIRES
-        }
+        if @request
+          @cookies["split"] = {
+            :value => JSON.generate(value),
+            :expires => EXPIRES
+          } 
+        else
+          @cookies[:split] = {
+            :value => JSON.generate(value),
+            :expires => EXPIRES
+          }
+        end
       end
 
       def hash
         if @cookies[:split]
           begin
-            JSON.parse(@cookies[:split])
+            if @cookies[:split] && @cookies[:split].is_a?(Hash)
+              JSON.parse(@cookies[:split][:value])
+            else
+              JSON.parse(@cookies[:split])
+            end
+          rescue JSON::ParserError
+            {}
+          end
+        elsif @cookies["split"]
+          begin
+            if @cookies["split"] && @cookies["split"].is_a?(Hash)
+              JSON.parse(@cookies["split"][:value])
+            else
+              JSON.parse(@cookies["split"])
+            end
           rescue JSON::ParserError
             {}
           end
