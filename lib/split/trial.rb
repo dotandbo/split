@@ -70,13 +70,12 @@ module Split
 
           # Increment the number of participants since we are actually choosing a new alternative
           self.alternative.increment_participation
-
-          # Run the post-choosing hook on the context
-          context.send(Split.configuration.on_trial_choose, self) \
-              if Split.configuration.on_trial_choose && context
         end
       end
 
+      #always run the post-choosing hook on the context, take care of not sending to woopra via javascript
+      context.send(Split.configuration.on_trial_choose, self) \
+        if Split.configuration.on_trial_choose && context
       @user[@experiment.key] = alternative.name if should_store_alternative?
       @alternative_choosen = true
       alternative

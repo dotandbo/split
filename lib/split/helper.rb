@@ -2,13 +2,13 @@ module Split
   module Helper
     module_function
 
-    def ab_test(metric_descriptor, control = nil, *alternatives)
+    def ab_test(metric_descriptor, control = nil, request=nil, *alternatives)
       begin
-        experiment = ExperimentCatalog.find_or_initialize(metric_descriptor, control, *alternatives)
+        experiment = ExperimentCatalog.find_or_initialize(metric_descriptor, control, request, *alternatives)
 
         alternative = if Split.configuration.enabled
           experiment.save
-          trial = Trial.new(:user => ab_user, :experiment => experiment,
+          trial = Trial.new(:user => ab_user(request), :experiment => experiment,
               :override => override_alternative(experiment.name), :exclude => exclude_visitor?,
               :disabled => split_generically_disabled?)
           alt = trial.choose!(self)
@@ -92,8 +92,12 @@ module Split
       alternative_name
     end
 
-    def ab_user
-      @ab_user ||= Split::Persistence.adapter.new(self)
+    def ab_user(request=nil)
+      if request #don't persist ab_user in rack
+        Split::Persistence.adapter.new(self, request)
+      else #okay to persist user in controller
+         @ab_user ||= Split::Persistence.adapter.new(self, request)
+      end
     end
 
     def exclude_visitor?

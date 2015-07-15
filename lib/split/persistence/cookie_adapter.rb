@@ -6,8 +6,8 @@ module Split
 
       EXPIRES = Time.now + 31536000 # One year from now
 
-      def initialize(context)
-        @cookies = context.send(:cookies)
+      def initialize(context, request=nil)
+        @cookies = request.try(:cookie_jar) || context.send(:cookies)
       end
 
       def [](key)
