@@ -65,7 +65,7 @@ module Split
         elsif @cookies["split"]
           binding.pry
           begin
-            JSON.parse(@cookies["split"])
+            JSON.parse(@cookies["split"][:value])
           rescue JSON::ParserError
             {}
           end
