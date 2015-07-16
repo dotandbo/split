@@ -9,6 +9,7 @@ module Split
       def initialize(context, request=nil)
         binding.pry
         @cookies = request.try(:cookies) || context.send(:cookies)
+        @request = request
       end
 
       def [](key)
@@ -28,16 +29,22 @@ module Split
 
       def keys
         binding.pry
-        hash.keys
+        hash.keysbac
       end
 
       private
 
       def set_cookie(value)
-        @cookies[:split] = {
-          :value => JSON.generate(value),
-          :expires => EXPIRES
-        }
+        if @request
+          @cookies["split"] = {
+            :value => JSON.generate(value),
+            :expires => EXPIRES
+          } 
+        else
+          @cookies[:split] = {
+            :value => JSON.generate(value),
+            :expires => EXPIRES
+          }
       end
 
       def hash
