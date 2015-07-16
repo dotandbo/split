@@ -54,7 +54,7 @@ module Split
         if @cookies[:split]
           begin
             binding.pry
-            if @cookies[:split] && @cookies[:split][:value]
+            if @cookies[:split] && @cookies[:split].is_a?(Hash)
               JSON.parse(@cookies[:split][:value])
             else
               JSON.parse(@cookies[:split])
