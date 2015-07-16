@@ -36,6 +36,7 @@ module Split
 
       def set_cookie(value)
         if @request
+          binding.pry
           @cookies["split"][:value] = {
             :value => JSON.generate(value),
             :expires => EXPIRES
@@ -58,7 +59,7 @@ module Split
           end
         elsif @cookies["split"]
           begin
-            JSON.parse(@cookies["split"])
+            JSON.parse(@cookies["split"][:value])
           rescue JSON::ParserError
             {}
           end
