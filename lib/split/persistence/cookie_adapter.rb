@@ -29,7 +29,7 @@ module Split
 
       def keys
         binding.pry
-        hash.keysbac
+        hash.keys
       end
 
       private
