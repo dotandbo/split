@@ -64,7 +64,6 @@ module Split
         if exclude_user?
           self.alternative = @experiment.control
         elsif @user[@experiment.key]
-          binding.pry
           self.alternative = @user[@experiment.key]
         else
           self.alternative = @experiment.next_alternative
@@ -74,7 +73,7 @@ module Split
         end
       end
 
-      #always run the post-choosing hook on the context always, take care of not sending to woopra via javascript
+      #always run the post-choosing hook on the context, take care of not sending to woopra via javascript
       context.send(Split.configuration.on_trial_choose, self) \
         if Split.configuration.on_trial_choose && context
       @user[@experiment.key] = alternative.name if should_store_alternative?
