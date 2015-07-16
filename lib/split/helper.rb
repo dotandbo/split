@@ -5,7 +5,7 @@ module Split
     def ab_test(metric_descriptor, control = nil, request=nil, *alternatives)
       binding.pry
       begin
-        experiment = ExperimentCatalog.find_or_initialize(metric_descriptor, control, *alternatives)
+        experiment = ExperimentCatalog.find_or_initialize(metric_descriptor, control, request, *alternatives)
 
         alternative = if Split.configuration.enabled
           experiment.save
@@ -138,6 +138,7 @@ module Split
     end
 
     def control_variable(control)
+      binding.pry
       Hash === control ? control.keys.first.to_s : control.to_s
     end
   end

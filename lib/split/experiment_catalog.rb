@@ -16,7 +16,7 @@ module Split
       Experiment.new(name).tap { |exp| exp.load_from_redis }
     end
 
-    def self.find_or_initialize(metric_descriptor, control = nil, *alternatives)
+    def self.find_or_initialize(metric_descriptor, control = nil, request=nil, *alternatives)
       # Check if array is passed to ab_test
       # e.g. ab_test('name', ['Alt 1', 'Alt 2', 'Alt 3'])
       if control.is_a? Array and alternatives.length.zero?
@@ -29,7 +29,7 @@ module Split
           :alternatives => [control].compact + alternatives, :goals => goals)
     end
 
-    def self.find_or_create(metric_descriptor, control = nil, *alternatives)
+    def self.find_or_create(metric_descriptor, control = nil, request=nil,  *alternatives)
       experiment = find_or_initialize(metric_descriptor, control, *alternatives)
       experiment.save
     end
