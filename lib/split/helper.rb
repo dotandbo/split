@@ -3,7 +3,6 @@ module Split
     module_function
 
     def ab_test(metric_descriptor, control = nil, request=nil, *alternatives)
-      binding.pry
       begin
         experiment = ExperimentCatalog.find_or_initialize(metric_descriptor, control, request, *alternatives)
 
@@ -12,7 +11,7 @@ module Split
           trial = Trial.new(:user => ab_user(request), :experiment => experiment,
               :override => override_alternative(experiment.name), :exclude => exclude_visitor?,
               :disabled => split_generically_disabled?)
-          alt = trial.choose!(self)
+          alt = trial.choose!(self, request)
           alt ? alt.name : nil
         else
           control_variable(experiment.control)
@@ -138,7 +137,6 @@ module Split
     end
 
     def control_variable(control)
-      binding.pry
       Hash === control ? control.keys.first.to_s : control.to_s
     end
   end

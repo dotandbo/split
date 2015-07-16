@@ -7,35 +7,29 @@ module Split
       EXPIRES = Time.now + 31536000 # One year from now
 
       def initialize(context, request=nil)
-        binding.pry
         @cookies = request.try(:cookies) || context.send(:cookies)
         @request = request
       end
 
       def [](key)
-        binding.pry
         hash[key]
       end
 
       def []=(key, value)
-        binding.pry
         set_cookie(hash.merge(key => value))
       end
 
       def delete(key)
-        binding.pry
         set_cookie(hash.tap { |h| h.delete(key) })
       end
 
       def keys
-        binding.pry
         hash.keys
       end
 
       private
 
       def set_cookie(value)
-        binding.pry
         if @request
           @cookies["split"] = {
             :value => JSON.generate(value),
@@ -50,10 +44,8 @@ module Split
       end
 
       def hash
-        binding.pry
         if @cookies[:split]
           begin
-            binding.pry
             if @cookies[:split] && @cookies[:split].is_a?(Hash)
               JSON.parse(@cookies[:split][:value])
             else
@@ -63,7 +55,6 @@ module Split
             {}
           end
         elsif @cookies["split"]
-          binding.pry
           begin
             if @cookies["split"] && @cookies["split"].is_a?(Hash)
               JSON.parse(@cookies["split"][:value])

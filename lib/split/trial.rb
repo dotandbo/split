@@ -48,7 +48,7 @@ module Split
     # Choose an alternative, add a participant, and save the alternative choice on the user. This
     # method is guaranteed to only run once, and will skip the alternative choosing process if run
     # a second time.
-    def choose!(context = nil)
+    def choose!(context = nil, request = nil)
       # Only run the process once
       return alternative if @alternative_choosen
 
@@ -64,19 +64,19 @@ module Split
         if exclude_user?
           self.alternative = @experiment.control
         elsif @user[@experiment.key]
+          binding.pry
           self.alternative = @user[@experiment.key]
         else
           self.alternative = @experiment.next_alternative
 
           # Increment the number of participants since we are actually choosing a new alternative
           self.alternative.increment_participation
-
-          # Run the post-choosing hook on the context
-          context.send(Split.configuration.on_trial_choose, self) \
-              if Split.configuration.on_trial_choose && context
         end
       end
 
+      #always run the post-choosing hook on the context always, take care of not sending to woopra via javascript
+      context.send(Split.configuration.on_trial_choose, self) \
+        if Split.configuration.on_trial_choose && context
       @user[@experiment.key] = alternative.name if should_store_alternative?
       @alternative_choosen = true
       alternative
