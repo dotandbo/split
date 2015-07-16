@@ -53,7 +53,12 @@ module Split
         binding.pry
         if @cookies[:split]
           begin
-            JSON.parse(@cookies[:split])
+            binding.pry
+            if @cookies[:split] && @cookies[:split][:value]
+              JSON.parse(@cookies[:split][:value])
+            else
+              JSON.parse(@cookies[:split])
+            end
           rescue JSON::ParserError
             {}
           end
