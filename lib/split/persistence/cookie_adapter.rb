@@ -35,7 +35,6 @@ module Split
             :value => JSON.generate(value),
             :expires => EXPIRES
           }
-        end
       end
 
       def hash
