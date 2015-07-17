@@ -8,6 +8,7 @@ module Split
 
         alternative = if Split.configuration.enabled
           experiment.save
+          binding.pry
           trial = Trial.new(:user => ab_user(request), :experiment => experiment,
               :override => override_alternative(experiment.name), :exclude => exclude_visitor?,
               :disabled => split_generically_disabled?)
