@@ -31,13 +31,6 @@ module Split
       private
 
       def set_cookie(value)
-        if @request
-          binding.pry
-          @cookies["split"] = {
-            :value => JSON.generate(value),
-            :expires => EXPIRES
-          } 
-        else
           @cookies[:split] = {
             :value => JSON.generate(value),
             :expires => EXPIRES
