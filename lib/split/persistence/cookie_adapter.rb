@@ -7,7 +7,8 @@ module Split
       EXPIRES = Time.now + 31536000 # One year from now
 
       def initialize(context, request=nil)
-        @cookies = request.try(:cookies) || context.send(:cookies)
+        binding.pry
+        @cookies = request.try(:cookie_jar) || context.send(:cookies)
         @request = request
       end
 
@@ -30,6 +31,13 @@ module Split
       private
 
       def set_cookie(value)
+        if @request
+          binding.pry
+          @cookies["split"] = {
+            :value => JSON.generate(value),
+            :expires => EXPIRES
+          } 
+        else
           @cookies[:split] = {
             :value => JSON.generate(value),
             :expires => EXPIRES
