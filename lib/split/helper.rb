@@ -94,7 +94,8 @@ module Split
     end
 
     def ab_user(request=nil)
-      @ab_user ||= Split::Persistence.adapter.new(self, request)
+      #remove @ab_user ||= in order to not persist user in rack
+      Split::Persistence.adapter.new(self, request)
     end
 
     def exclude_visitor?
